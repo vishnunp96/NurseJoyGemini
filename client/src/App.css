@@ -1,0 +1,145 @@
+/* Reset some default styles */
+:root {
+  --bg-colour: #A3D5FF;
+  --text-colour: #0a195b;
+  --border-colour: #D9F0FF;
+  --side-bg-colour: #83C9F4;
+  --input-bg-colour: #D9F0FF;
+}
+
+.App {
+  text-align: center;
+  display: flex;
+  background-color: var(--bg-colour);
+  color: var(--text-colour);
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+}
+
+.sidemenu{
+  width: 260px;
+  /*border: 1px solid var(--border-colour);*/
+  background-color: var(--side-bg-colour);
+  padding: 12px;
+}
+
+.chatbox{
+  flex: 1;
+  /*border: 1px solid var(--border-colour);*/
+  background-color: var(--bg-colour);
+  position: relative;
+}
+
+.new-patient-button{
+  padding: 12px;
+  border: 1px solid var(--border-colour);
+  border-radius: 12px;
+  text-align: left;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.25s ease all;
+}
+.new-patient-button:hover{
+  background-color: rgba(217, 240, 255, 0.5);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
+}
+.new-patient-button span{
+  padding-left: 12px;
+  padding-right: 24px;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.chat-input-holder{
+  padding: 24px;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+}
+.chat-input-textarea{
+  background-color: var(--input-bg-colour);
+  width: 90%;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  margin: 12px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
+  font-size: 1.25em;
+}
+
+.chat-log{
+  /*padding: 24px;*/
+  text-align: left;
+}
+
+.chat-message-element{
+  /*background-color: rgba(255, 255, 255, 0.2);*/
+}
+
+.chat-message-element.model{
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.chat-message-element-center{
+  display: flex;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 12px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.chat-message-avatar{
+  background-color: var(--input-bg-colour);
+  border-radius: 25%;
+  height: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chat-message-avatar.model{
+  background-color: var(--side-bg-colour);
+}
+
+
+.chat-message-text{
+  padding-left: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/*.App-header {*/
+/*  background-color: #282c34;*/
+/*  min-height: 100vh;*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  font-size: calc(10px + 2vmin);*/
+/*  color: white;*/
+/*}*/
+
+/*.App-link {*/
+/*  color: #61dafb;*/
+/*}*/
+
+/*@keyframes App-logo-spin {*/
+/*  from {*/
+/*    transform: rotate(0deg);*/
+/*  }*/
+/*  to {*/
+/*    transform: rotate(360deg);*/
+/*  }*/
+/*}*/
