@@ -1,9 +1,10 @@
 import './normalize.css'
 import './App.css';
 import {useState} from "react";
+import {useRef, useEffect} from "react";
 
 function App() {
-
+    const chatMsgRef = useRef(null);
     const [input, setInput] = useState("");
     const [chatLog, setChatLog] = useState([
         {
@@ -28,13 +29,19 @@ function App() {
         setChatLog([])
     }
 
+    async function scrollChat() {
+        if (chatMsgRef.current) {
+            await new Promise(r => setTimeout(r, 50));
+            chatMsgRef.current.scrollTop = chatMsgRef.current.scrollHeight;
+        }
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
-        console.log("got here");
         let chatLogNew = [...chatLog, {user: "P", message: `${input}`}];
         await setChatLog(chatLogNew);
         await setInput("");
-        console.log("input is->" + input)
+        scrollChat();
         const response = await fetch('/api', {
             method: "POST",
             headers: {
@@ -45,12 +52,13 @@ function App() {
             })
         });
         const {modelResponse} = await response.json();
-        console.log(modelResponse);
         chatLogNew = [...chatLogNew, {
             user: "model",
             message: `${modelResponse}`
         }];
         await setChatLog(chatLogNew);
+        console.log("chatlog complete");
+        await scrollChat();
     }
 
     return (
@@ -70,7 +78,7 @@ function App() {
             </div>
             <section className="chat-area">
                 <h1>Nurse Joy Prototype</h1>
-                <div className="chat-log">
+                <div ref={chatMsgRef} className="chat-log">
                     {
                         chatLog.map((message, index) => (
                             <ChatMessage key={index} message={message}/>
