@@ -1,7 +1,6 @@
 import './normalize.css'
 import './App.css';
 import {useState} from "react";
-import {clear} from "@testing-library/user-event/dist/clear";
 
 function App() {
 
@@ -16,15 +15,23 @@ function App() {
             message: "NJ is here, have no fear."
         }
     ]);
+    const [patientList, setPatientList] = useState([
+        {
+            id: "Patient-666"
+        },
+        {
+            id: "Patient-420"
+        }
+    ])
 
-    function clearChat(){
+    function clearChat() {
         setChatLog([])
     }
 
     async function handleSubmit(e) {
         e.preventDefault();
         console.log("got here");
-        let chatLogNew = [...chatLog, { user: "P", message: `${input}`}];
+        let chatLogNew = [...chatLog, {user: "P", message: `${input}`}];
         await setChatLog(chatLogNew);
         await setInput("");
         console.log("input is->" + input)
@@ -37,26 +44,36 @@ function App() {
                 message: input
             })
         });
-        const { modelResponse } = await response.json();
+        const {modelResponse} = await response.json();
         console.log(modelResponse);
-        chatLogNew = [...chatLogNew, { user: "model", message: `${modelResponse}`}];
+        chatLogNew = [...chatLogNew, {
+            user: "model",
+            message: `${modelResponse}`
+        }];
         await setChatLog(chatLogNew);
     }
 
     return (
         <div className="App">
-            <aside className="sidemenu">
+            <div className="side-menu">
                 <div className="new-patient-button" onClick={clearChat}>
                     <span>+</span>
                     New Patient
                 </div>
-            </aside>
-            <section className="chatbox">
+                <div className="patient-list">
+                    {
+                        patientList.map((data, index)=> (
+                            <PatientTab key={index} patientId={data.id}/>
+                        ))
+                    }
+                </div>
+            </div>
+            <section className="chat-area">
                 <h1>Nurse Joy Prototype</h1>
                 <div className="chat-log">
                     {
-                        chatLog.map( (message, index) => (
-                            <ChatMessage key={index} message={message} />
+                        chatLog.map((message, index) => (
+                            <ChatMessage key={index} message={message}/>
                         ))
                     }
                 </div>
@@ -66,7 +83,7 @@ function App() {
                                placeholder="Add any details about the patient here!"
                                value={input}
                                onChange={(e) => setInput(e.target.value)}
-                               rows="2">
+                               rows="2" required={true}>
                         </input>
                     </form>
                 </div>
@@ -78,10 +95,10 @@ function App() {
 const ChatMessage = ({message}) => {
     return (
         <div className={`chat-message-element 
-        ${message.user === "model" ? "model": "user"}`}>
+        ${message.user === "model" ? "model" : "user"}`}>
             <div className="chat-message-element-center">
                 <div className={`chat-message-avatar 
-                ${message.user === "model" ? "model": "user"}`}>
+                ${message.user === "model" ? "model" : "user"}`}>
                     {message.user === "model" ? "NJ" : "P"}
                 </div>
                 <div className="chat-message-text">
@@ -89,6 +106,12 @@ const ChatMessage = ({message}) => {
                 </div>
             </div>
         </div>
+    )
+};
+
+const PatientTab = ({patientId}) => {
+    return (
+        <div className="patient-tab">{patientId}</div>
     )
 }
 
