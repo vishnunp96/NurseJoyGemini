@@ -25,8 +25,13 @@ function App() {
         }
     ])
 
-    function clearChat() {
-        setChatLog([])
+    function addNewPatient() {
+        const userInput = prompt("Please enter patient identifier:");
+        if(userInput !== null && userInput.trim() !== "") {
+            setChatLog([]);
+            console.log("am i coming here");
+            setPatientList([{id: `${userInput}`}, ...patientList]);
+        }
     }
 
     async function scrollChat() {
@@ -64,7 +69,7 @@ function App() {
     return (
         <div className="App">
             <div className="side-menu">
-                <div className="new-patient-button" onClick={clearChat}>
+                <div className="new-patient-button" onClick={addNewPatient}>
                     <span>+</span>
                     New Patient
                 </div>
