@@ -1,0 +1,6 @@
+- PRIORITY(DESC)
+- 
+- [ ] rich text display
+- [ ] button for generating report
+- [ ] voice recording
+- [ ] design overhaul
