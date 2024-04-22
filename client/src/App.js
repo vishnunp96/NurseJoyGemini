@@ -23,14 +23,17 @@ function App() {
         {
             id: "Patient-420"
         }
-    ])
+    ]);
+    const [activePatient, setActivePatient] = useState(patientList[0] ? patientList[0]["id"] : 0);
 
-    function addNewPatient() {
+
+    async function addNewPatient() {
         const userInput = prompt("Please enter patient identifier:");
         if(userInput !== null && userInput.trim() !== "") {
             setChatLog([]);
             console.log("New patient being added: " + userInput);
-            setPatientList([{id: `${userInput}`}, ...patientList]);
+            await setPatientList([{id: `${userInput}`}, ...patientList]);
+            await setActivePatient(userInput);
         }
     }
 
@@ -47,7 +50,7 @@ function App() {
         let chatLogNew = [...chatLog, {user: "P", message: `${input}`}];
         await setChatLog(chatLogNew);
         await setInput("");
-        scrollChat();
+        await scrollChat();
         const response = await fetch('/api', {
             method: "POST",
             headers: {
@@ -81,7 +84,7 @@ function App() {
                 <div className="patient-list">
                     {
                         patientList.map((data, index)=> (
-                            <PatientTab key={index} patientId={data.id}/>
+                            <PatientTab key={index} patientId={data.id} activePatient={activePatient}/>
                         ))
                     }
                 </div>
@@ -127,9 +130,9 @@ const ChatMessage = ({message}) => {
     )
 };
 
-const PatientTab = ({patientId}) => {
+const PatientTab = ({patientId, activePatient}) => {
     return (
-        <div className="patient-tab">{patientId}</div>
+        <div className={`patient-tab ${activePatient === patientId ? "active" : ""}`}>{patientId}</div>
     )
 }
 

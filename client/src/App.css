@@ -58,6 +58,9 @@
   border: 1px none var(--border-colour);
   border-radius: 12px;
 }
+.patient-tab.active{
+  background-color: rgba(0, 0, 0, 0.1);
+}
 .patient-tab:nth-child(even) {
   background-color: rgba(217, 240, 255, 0.2);
 }
