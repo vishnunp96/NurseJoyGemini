@@ -20,7 +20,7 @@ async function initialiseChat(chat_history = null) {
 }
 initialiseChat();
 
-app.post('/api', async (req, res) => {
+app.post('/chatResponse', async (req, res) => {
     let response = "Could not fulfill request. Check error logs";
     const { message } = req.body;
     if (chatObject) {
@@ -60,6 +60,8 @@ app.put('/changePatient', async (req, res) => {
 
 
 app.get('/getChat', async (req, res) => {
+    console.log("returning history for current active - " + activePatient);
+    console.log(chatHistory[activePatient]);
     res.status(200).json({
         history : chatHistory[activePatient]
     })

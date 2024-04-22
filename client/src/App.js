@@ -1,56 +1,48 @@
 import './normalize.css'
 import './App.css';
 import {useState} from "react";
-import {useRef, useEffect} from "react";
+import {useRef} from "react";
 
 function App() {
     const chatMsgRef = useRef(null);
     const [input, setInput] = useState("");
     const [chatLog, setChatLog] = useState([
-        // {
-        //     user: "user",
-        //     message: "Hello Hello, I reached JS Hell!"
-        // },
-        // {
-        //     user: "model",
-        //     message: "NJ is here, have no fear."
-        // }
     ]);
     const [patientList, setPatientList] = useState([
-        // {
-        //     id: "Patient-666"
-        // },
-        // {
-        //     id: "Patient-420"
-        // }
     ]);
-    const [activePatient, setActivePatient] = useState(patientList[0] ? patientList[0]["id"] : 0);
+    const [activePatient, setActivePatient] = useState(patientList[0] ? patientList[0]["id"] : null);
 
 
     async function addNewPatient() {
         const userInput = prompt("Please enter patient identifier:");
         if(userInput !== null && userInput.trim() !== "") {
-            setChatLog([]);
-            console.log("New patient being added: " + userInput);
             try{
-                const response = await fetch('/changePatient', {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        patient: userInput
-                    })
-                });
-                if(response.status !== 201)
-                    throw new Error("API response not good - " + response.status);
+                await changePatient(userInput);
+                await setPatientList([{id: `${userInput}`}, ...patientList]);
             } catch (e){
-                console.log("Could not change to patient - "+ userInput);
-                return;
+                console.log(e);
             }
-
-            await setPatientList([{id: `${userInput}`}, ...patientList]);
-            await setActivePatient(userInput);
+        }
+    }
+    async function changePatient( patientId ) {
+        setChatLog([]);
+        console.log("Patient being changed to: " + patientId);
+        try{
+            const response = await fetch('/changePatient', {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    patient: patientId
+                })
+            });
+            if(response.status !== 201)
+                throw new Error("API response not good - " + response.status);
+            await getChatHistory();
+            await setActivePatient(patientId);
+        } catch (e){
+            console.log("Could not change to patient - "+ patientId);
         }
     }
 
@@ -62,16 +54,18 @@ function App() {
             if(response.status !== 200)
                 throw new Error("API response not good - " + response.status);
 
-            const { history } = response.json();
-            setChatLog([]);
+            const { history } = await response.json();
+            await setChatLog([]);
+            const newChatLog = [];
             history.forEach( function(chat) {
-                setChatLog([...chatLog, {
+                newChatLog.push({
                     user: chat["role"],
                     message: chat["parts"][0]["text"]
-                }]);
+                });
             });
+            setChatLog(newChatLog);
         } catch (e){
-            console.log("Could not get chatHistory");
+            console.log("Could not get chatHistory due to "+ e);
             return;
         }
     }
@@ -90,7 +84,7 @@ function App() {
         await setChatLog(chatLogNew);
         await setInput("");
         await scrollChat();
-        const response = await fetch('/api', {
+        const response = await fetch('/chatResponse', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -123,7 +117,9 @@ function App() {
                 <div className="patient-list">
                     {
                         patientList.map((data, index)=> (
-                            <PatientTab key={index} patientId={data.id} activePatient={activePatient}/>
+                            <PatientTab key={index} patientId={data.id} activePatient={activePatient}
+                                        clickFn={changePatient}
+                            />
                         ))
                     }
                 </div>
@@ -140,10 +136,11 @@ function App() {
                 <div className="chat-input-holder">
                     <form onSubmit={handleSubmit}>
                         <input className="chat-input-textarea"
-                               placeholder="Add any details about the patient here!"
+                               placeholder={`${activePatient === null ? "Add a new patient!" :
+                               "Add any details about the patient here!"}`}
                                value={input}
                                onChange={(e) => setInput(e.target.value)}
-                               rows="2" required={true}>
+                               rows="2" required={true} disabled={activePatient === null}>
                         </input>
                     </form>
                 </div>
@@ -169,9 +166,11 @@ const ChatMessage = ({message}) => {
     )
 };
 
-const PatientTab = ({patientId, activePatient}) => {
+const PatientTab = ({patientId, activePatient, clickFn}) => {
     return (
-        <div className={`patient-tab ${activePatient === patientId ? "active" : ""}`}>{patientId}</div>
+        <div className={`patient-tab ${activePatient === patientId ? "active" : ""}`}
+        onClick={activePatient === patientId ? null :
+            ()=>{ clickFn(patientId)}}>{patientId}</div>
     )
 }
 
