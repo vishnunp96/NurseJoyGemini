@@ -5,9 +5,13 @@ app.use(express.json())
 const {startChat, getStreamResponse, getResponse} = require('./genModel')
 
 let chatObject = null;
+let patients = [];
+let chatHistory = {};
+let activePatient = "";
 
-async function initialiseChat() {
-    chatObject = await startChat();
+
+async function initialiseChat(chat_history = null) {
+    chatObject = await startChat(chat_history);
     if (chatObject) {
         console.log("Chat started.");
     } else {
@@ -17,16 +21,49 @@ async function initialiseChat() {
 initialiseChat();
 
 app.post('/api', async (req, res) => {
-    let response = "Dummy";
+    let response = "Could not fulfill request. Check error logs";
     const { message } = req.body;
     if (chatObject) {
-        response = await getResponse(chatObject, message);
+        try{
+            response = await getResponse(chatObject, message);
+            chatHistory[activePatient].push({"role": "user", "parts": [{"text": message}]});
+            chatHistory[activePatient].push({"role": "model", "parts": [{"text": response}]});
+            console.log("history appended for "+activePatient);
+        } catch (e){
+            console.log(e);
+        }
     }
     console.log(response);
     res.json({
         modelResponse : response
     })
-})
+});
+
+
+app.put('/changePatient', async (req, res) => {
+    try{
+        const {patient} = req.body;
+        if(!patients.includes(patient)){
+            patients.push(patient);
+            chatHistory[patient] = []
+        }
+        await initialiseChat(chatHistory[patient]);
+        activePatient = patient;
+        console.log("Successfully changed context to patient - " + activePatient);
+        res.status(201).send("Success in changing patient");
+    } catch (e){
+        console.log(e);
+        res.status(400).send("Error in changing patient.");
+    }
+
+});
+
+
+app.get('/getChat', async (req, res) => {
+    res.status(200).json({
+        history : chatHistory[activePatient]
+    })
+});
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

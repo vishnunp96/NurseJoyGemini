@@ -7,22 +7,22 @@ function App() {
     const chatMsgRef = useRef(null);
     const [input, setInput] = useState("");
     const [chatLog, setChatLog] = useState([
-        {
-            user: "user",
-            message: "Hello Hello, I reached JS Hell!"
-        },
-        {
-            user: "model",
-            message: "NJ is here, have no fear."
-        }
+        // {
+        //     user: "user",
+        //     message: "Hello Hello, I reached JS Hell!"
+        // },
+        // {
+        //     user: "model",
+        //     message: "NJ is here, have no fear."
+        // }
     ]);
     const [patientList, setPatientList] = useState([
-        {
-            id: "Patient-666"
-        },
-        {
-            id: "Patient-420"
-        }
+        // {
+        //     id: "Patient-666"
+        // },
+        // {
+        //     id: "Patient-420"
+        // }
     ]);
     const [activePatient, setActivePatient] = useState(patientList[0] ? patientList[0]["id"] : 0);
 
@@ -32,8 +32,47 @@ function App() {
         if(userInput !== null && userInput.trim() !== "") {
             setChatLog([]);
             console.log("New patient being added: " + userInput);
+            try{
+                const response = await fetch('/changePatient', {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        patient: userInput
+                    })
+                });
+                if(response.status !== 201)
+                    throw new Error("API response not good - " + response.status);
+            } catch (e){
+                console.log("Could not change to patient - "+ userInput);
+                return;
+            }
+
             await setPatientList([{id: `${userInput}`}, ...patientList]);
             await setActivePatient(userInput);
+        }
+    }
+
+    async function getChatHistory() {
+        try{
+            const response = await fetch('/getChat', {
+                method: "GET"
+            });
+            if(response.status !== 200)
+                throw new Error("API response not good - " + response.status);
+
+            const { history } = response.json();
+            setChatLog([]);
+            history.forEach( function(chat) {
+                setChatLog([...chatLog, {
+                    user: chat["role"],
+                    message: chat["parts"][0]["text"]
+                }]);
+            });
+        } catch (e){
+            console.log("Could not get chatHistory");
+            return;
         }
     }
 

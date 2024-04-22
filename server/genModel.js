@@ -10,7 +10,7 @@ const MODEL_NAME = "gemini-1.0-pro";
 const API_KEY = process.env.GEMINI_API_KEY;
 
 
-async function startChat() {
+async function startChat(chat_history = null) {
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({model: MODEL_NAME});
 
@@ -40,15 +40,20 @@ async function startChat() {
         },
     ];
 
-    const starting_prompt = JSON.parse(fs.readFileSync('./starting_prompt.json', 'utf8'));
+    let starting_prompt = JSON.parse(fs.readFileSync('./starting_prompt.json', 'utf8'));
     starting_prompt.forEach( function(side) {
         Object.keys(side).forEach(function(k){
             if(k === "parts"){
                 const content = side[k][0];
                 side[k] = [{"text" : content}];
+                // console.log(side[k]);
             }
         });
     });
+
+    if(chat_history){
+        starting_prompt = starting_prompt.concat(chat_history);
+    }
 
     return model.startChat({
         generationConfig,
