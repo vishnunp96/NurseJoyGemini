@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3500
 app.use(express.json())
-
 const {startChat, getStreamResponse, getResponse} = require('./genModel')
 
 let chatObject = null;

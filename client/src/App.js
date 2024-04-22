@@ -29,7 +29,7 @@ function App() {
         const userInput = prompt("Please enter patient identifier:");
         if(userInput !== null && userInput.trim() !== "") {
             setChatLog([]);
-            console.log("am i coming here");
+            console.log("New patient being added: " + userInput);
             setPatientList([{id: `${userInput}`}, ...patientList]);
         }
     }
@@ -43,6 +43,7 @@ function App() {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        console.log("Submit button is clicked.");
         let chatLogNew = [...chatLog, {user: "P", message: `${input}`}];
         await setChatLog(chatLogNew);
         await setInput("");
@@ -56,13 +57,17 @@ function App() {
                 message: input
             })
         });
-        const {modelResponse} = await response.json();
-        chatLogNew = [...chatLogNew, {
-            user: "model",
-            message: `${modelResponse}`
-        }];
+        try{
+            const {modelResponse} = await response.json();
+            chatLogNew = [...chatLogNew, {
+                user: "model",
+                message: `${modelResponse}`
+            }];
+        } catch(e){
+            console.log("Error with the response");
+        }
         await setChatLog(chatLogNew);
-        console.log("chatlog complete");
+        console.log("Chat appended success.");
         await scrollChat();
     }
 
