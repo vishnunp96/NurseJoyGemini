@@ -61,11 +61,16 @@ app.put('/changePatient', async (req, res) => {
 
 app.get('/getChat', async (req, res) => {
     console.log("returning history for current active - " + activePatient);
-    console.log(chatHistory[activePatient]);
     res.status(200).json({
         history : chatHistory[activePatient]
     })
 });
 
+app.get('/getPatients', async (req, res) => {
+    console.log("returning list of patients " + patients);
+    res.status(200).json({
+        patients : patients
+    })
+});
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

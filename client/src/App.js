@@ -1,7 +1,7 @@
 import './normalize.css'
 import './App.css';
 import {useState} from "react";
-import {useRef} from "react";
+import {useRef, useEffect} from "react";
 
 function App() {
     const chatMsgRef = useRef(null);
@@ -11,6 +11,7 @@ function App() {
     const [patientList, setPatientList] = useState([
     ]);
     const [activePatient, setActivePatient] = useState(patientList[0] ? patientList[0]["id"] : null);
+    useEffect(() => { loadPatients(); }, []);
 
 
     async function addNewPatient() {
@@ -66,6 +67,30 @@ function App() {
             setChatLog(newChatLog);
         } catch (e){
             console.log("Could not get chatHistory due to "+ e);
+            return;
+        }
+    }
+
+
+    async function loadPatients() {
+        try{
+            const response = await fetch('/getPatients', {
+                method: "GET"
+            });
+            if(response.status !== 200)
+                throw new Error("API response not good - " + response.status);
+
+            const { patients } = await response.json();
+            const patientIds = [];
+            patients.forEach( function(patient) {
+                patientIds.push({ id: patient})
+            });
+            if(patientIds.length > 0){
+                setPatientList(patientIds);
+                changePatient(patientIds[0]["id"]);
+            }
+        } catch (e){
+            console.log("Could not get patient list due to "+ e);
             return;
         }
     }
