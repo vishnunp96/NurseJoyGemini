@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3500
 app.use(express.json())
-const {startChat, getStreamResponse, getResponse} = require('./genModel')
+const {startChat, getResponse} = require('./genModel')
 
 let chatObject = null;
 let patients = [];
@@ -73,4 +73,6 @@ app.get('/getPatients', async (req, res) => {
     })
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+module.exports = app;

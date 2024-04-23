@@ -41,11 +41,13 @@ function App() {
                     patient: patientId
                 })
             });
-            if(response.status !== 201)
-                throw new Error("API response not good - " + response.status);
-            await getChatHistory();
-            await setActivePatient(patientId);
-            return true;
+            if(response.status === 201) {
+                await getChatHistory();
+                await setActivePatient(patientId);
+                return true;
+            } else {
+                console.log("Error - API response for changing patient - " + response.status);
+            }
         } catch (e){
             console.log("Could not change to patient - "+ patientId);
         }
@@ -57,19 +59,20 @@ function App() {
             const response = await fetch('/getChat', {
                 method: "GET"
             });
-            if(response.status !== 200)
-                throw new Error("API response not good - " + response.status);
-
-            const { history } = await response.json();
-            await setChatLog([]);
-            const newChatLog = [];
-            history.forEach( function(chat) {
-                newChatLog.push({
-                    user: chat["role"],
-                    message: chat["parts"][0]["text"]
+            if(response.status === 200) {
+                const {history} = await response.json();
+                await setChatLog([]);
+                const newChatLog = [];
+                history.forEach(function (chat) {
+                    newChatLog.push({
+                        user: chat["role"],
+                        message: chat["parts"][0]["text"]
+                    });
                 });
-            });
-            setChatLog(newChatLog);
+                setChatLog(newChatLog);
+            } else {
+                console.log("Error - API response for getting chat history - " + response.status);
+            }
         } catch (e){
             console.log("Could not get chatHistory due to "+ e);
         }
@@ -81,18 +84,20 @@ function App() {
             const response = await fetch('/getPatients', {
                 method: "GET"
             });
-            if(response.status !== 200)
-                throw new Error("API response not good - " + response.status);
-
-            const { patients } = await response.json();
-            const patientIds = [];
-            patients.forEach( function(patient) {
-                patientIds.push({ id: patient})
-            });
-            if(patientIds.length > 0){
-                setPatientList(patientIds);
-                await changePatient(patientIds[0]["id"]);
+            if(response.status === 200){
+                const { patients } = await response.json();
+                const patientIds = [];
+                patients.forEach( function(patient) {
+                    patientIds.push({ id: patient})
+                });
+                if(patientIds.length > 0){
+                    setPatientList(patientIds.reverse());
+                    await changePatient(patientIds[0]["id"]);
+                }
+            } else {
+                console.log("Error - API response for loading patients - " + response.status);
             }
+
         } catch (e){
             console.log("Could not get patient list due to "+ e);
         }
@@ -168,7 +173,7 @@ function App() {
                                "Add any details about the patient here!"}`}
                                value={input}
                                onChange={(e) => setInput(e.target.value)}
-                               rows="2" required={true} disabled={activePatient === null}>
+                               required={true} disabled={activePatient === null}>
                         </input>
                     </form>
                 </div>
