@@ -11,17 +11,20 @@ function App() {
     const [patientList, setPatientList] = useState([
     ]);
     const [activePatient, setActivePatient] = useState(patientList[0] ? patientList[0]["id"] : null);
-    useEffect(() => { loadPatients(); }, []);
+    useEffect(() => {
+        loadPatients();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []);
 
 
     async function addNewPatient() {
         const userInput = prompt("Please enter patient identifier:");
         if(userInput !== null && userInput.trim() !== "") {
             try{
-                await changePatient(userInput);
-                await setPatientList([{id: `${userInput}`}, ...patientList]);
+                if (await changePatient(userInput))
+                    await setPatientList([{id: `${userInput}`}, ...patientList]);
             } catch (e){
-                console.log(e);
+                console.log("Could not add new patient - " + e);
             }
         }
     }
@@ -42,9 +45,11 @@ function App() {
                 throw new Error("API response not good - " + response.status);
             await getChatHistory();
             await setActivePatient(patientId);
+            return true;
         } catch (e){
             console.log("Could not change to patient - "+ patientId);
         }
+        return false;
     }
 
     async function getChatHistory() {
@@ -67,7 +72,6 @@ function App() {
             setChatLog(newChatLog);
         } catch (e){
             console.log("Could not get chatHistory due to "+ e);
-            return;
         }
     }
 
@@ -87,11 +91,10 @@ function App() {
             });
             if(patientIds.length > 0){
                 setPatientList(patientIds);
-                changePatient(patientIds[0]["id"]);
+                await changePatient(patientIds[0]["id"]);
             }
         } catch (e){
             console.log("Could not get patient list due to "+ e);
-            return;
         }
     }
 
@@ -104,7 +107,7 @@ function App() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        console.log("Submit button is clicked.");
+        console.log("Input being submitted.");
         let chatLogNew = [...chatLog, {user: "P", message: `${input}`}];
         await setChatLog(chatLogNew);
         await setInput("");
@@ -128,7 +131,7 @@ function App() {
             console.log("Error with the response");
         }
         await setChatLog(chatLogNew);
-        console.log("Chat appended success.");
+        console.log("Chat response appended.");
         await scrollChat();
     }
 
