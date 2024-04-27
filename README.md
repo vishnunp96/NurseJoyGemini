@@ -1,2 +1,12 @@
-Navigate to server folder in one terminal > npm run dev
-Navigate to client folder in another terminal > npm start
+SET environment variable:
+GEMINI_API_KEY
+
+
+BUILD service:
+docker-compose build
+
+Get service up and running:
+docker-compose up
+
+Bring down service:
+docker-compose down
