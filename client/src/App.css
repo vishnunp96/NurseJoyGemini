@@ -88,6 +88,7 @@
   flex: 1;
   height: 100%;
   display: grid;
+  padding-top: 36px;
   grid-template-rows:
     [top] auto 5rem [bottom];
   grid-template-areas:
