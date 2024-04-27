@@ -3,6 +3,7 @@ const app = express()
 const PORT = process.env.PORT || 3500
 app.use(express.json())
 const {startChat, getResponse} = require('./genModel')
+const fs = require("fs");
 
 let chatObject = null;
 let patients = [];
@@ -71,6 +72,23 @@ app.get('/getPatients', async (req, res) => {
     res.status(200).json({
         patients : patients
     })
+});
+
+
+app.get('/getReport', async (req, res) => {
+    const { prompt } = JSON.parse(fs.readFileSync('./report_generating_prompt.json', 'utf8'));
+    let response = "Could not fulfill request. Check error logs";
+    if (chatObject) {
+        try{
+            response = await getResponse(chatObject, prompt);
+        } catch (e){
+            console.log(e);
+        }
+    }
+    console.log(response);
+    res.status(200).json({
+        reportContent : response
+    });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

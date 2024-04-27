@@ -41,7 +41,7 @@ class FileDownloadButton extends React.Component {
         anchorElement.href = URL.createObjectURL(blob);
 
         // Set the download attribute to specify the file name
-        anchorElement.download = 'example.txt';
+        anchorElement.download = 'medicalReport.txt';
 
         // Simulate a click on the anchor element
         anchorElement.click();
