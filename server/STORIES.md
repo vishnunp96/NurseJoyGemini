@@ -1,6 +1,6 @@
 - PRIORITY(DESC)
 - 
-- [ ] local DB
-- [ ] store patient chats
+- [x] local DB -> in-memory store
+- [x] store patient chats
 - [ ] generate report
 - [ ] diagnosis options
