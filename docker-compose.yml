@@ -1,0 +1,23 @@
+version: "1"
+
+services:
+  server:
+    build: ./server
+    image: docjoy-server
+    command:
+      - npm start
+    ports:
+      - 3500:3500
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+
+  client:
+    build: ./client
+    image: docjoy-client
+    command:
+      - npm start
+#    network_mode: host
+    ports:
+      - 3000:3000
+    depends_on:
+      - server
