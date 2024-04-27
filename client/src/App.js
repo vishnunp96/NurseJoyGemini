@@ -143,6 +143,7 @@ function App() {
     return (
         <div className="App">
             <div className="side-menu">
+                <h1>DOCJOY</h1>
                 <div className="new-patient-button" onClick={addNewPatient}>
                     <span>+</span>
                     New Patient
@@ -158,7 +159,6 @@ function App() {
                 </div>
             </div>
             <section className="chat-area">
-                <h1>Nurse Joy Prototype</h1>
                 <div ref={chatMsgRef} className="chat-log">
                     {
                         chatLog.map((message, index) => (

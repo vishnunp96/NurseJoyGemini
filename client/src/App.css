@@ -1,10 +1,15 @@
 /* Reset some default styles */
 :root {
-  --bg-colour: #A3D5FF;
-  --text-colour: #0a195b;
-  --border-colour: #D9F0FF;
-  --side-bg-colour: #83C9F4;
-  --input-bg-colour: #D9F0FF;
+  /*--bg-colour: #A3D5FF;*/
+  /*--text-colour: #0a195b;*/
+  /*--border-colour: #D9F0FF;*/
+  /*--side-bg-colour: #83C9F4;*/
+  /*--input-bg-colour: #D9F0FF;*/
+  --bg-colour: #f7fbff;
+  --text-colour: #001120;
+  --border-colour: #f7fbff;
+  --side-bg-colour: #27008c;
+  --input-bg-colour: rgba(39, 0, 140, 0.2);
 }
 
 .App {
@@ -24,7 +29,15 @@
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  padding: 36px 12px 12px;
+  padding: 12px 12px 12px;
+  color: var(--bg-colour);
+}
+.side-menu>h1{
+  text-align: center;
+  font-size: 3rem;
+  font-family: "Heiti SC", sans-serif;
+  margin: 12px auto 36px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
 }
 .new-patient-button{
   padding: 24px 12px 24px 36px;
@@ -57,13 +70,14 @@
   transition: 0.25s ease all;
   border: 1px none var(--border-colour);
   border-radius: 12px;
+  background-color: rgba(217, 240, 255, 0.1);
 }
 .patient-tab.active{
   /*background-color: rgba(0, 0, 0, 0.1);*/
-  box-shadow: 1px 1px 5px #555 inset;
+  box-shadow: 1px 1px 20px #fff inset;
 }
 .patient-tab:nth-child(even) {
-  background-color: rgba(217, 240, 255, 0.2);
+  background-color: rgba(217, 240, 255, 0.3);
 }
 .patient-tab:hover{
   background-color: rgba(217, 240, 255, 0.6);
@@ -75,15 +89,14 @@
   height: 100%;
   display: grid;
   grid-template-rows:
-    [top] 5rem auto 5rem [bottom];
+    [top] auto 5rem [bottom];
   grid-template-areas:
-    "head"
     "chatlog"
     "foot";
 }
-.chat-area>h1{
-  grid-area: head;
-}
+/*.chat-area>h1{*/
+/*  grid-area: head;*/
+/*}*/
 .chat-log{
   grid-area: chatlog;
   display: flex;
@@ -138,6 +151,7 @@
 }
 .chat-message-avatar.model{
   background-color: var(--side-bg-colour);
+  color: var(--bg-colour);
 }
 
 
