@@ -2,6 +2,7 @@ import './normalize.css'
 import './App.css';
 import {useState} from "react";
 import {useRef, useEffect} from "react";
+import DownloadButton from "./DownloadButton";
 
 function App() {
     const chatMsgRef = useRef(null);
@@ -159,7 +160,8 @@ function App() {
                 </div>
             </div>
             <section className="chat-area">
-                <button className="report-button" >Download Report</button>
+                {/*<button className="report-button" >Download Report</button>*/}
+                <DownloadButton/>
                 <div ref={chatMsgRef} className="chat-log">
                     {
                         chatLog.map((message, index) => (
