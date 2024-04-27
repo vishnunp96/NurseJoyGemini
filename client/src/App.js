@@ -159,6 +159,7 @@ function App() {
                 </div>
             </div>
             <section className="chat-area">
+                <button className="report-button" >Download Report</button>
                 <div ref={chatMsgRef} className="chat-log">
                     {
                         chatLog.map((message, index) => (

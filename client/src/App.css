@@ -162,3 +162,23 @@
   align-items: center;
   text-align: left;
 }
+
+.report-button{
+  z-index:1;
+  position: absolute;
+  top: 0; right: 0;
+  margin: 24px 36px;
+  padding: 18px;
+  border: 1px solid var(--border-colour);
+  border-radius: 12px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 15%;
+  color: var(--bg-colour);
+  background-color: var(--side-bg-colour);
+  font-weight: bold;
+  transition-duration: 0.5s;
+}
+.report-button:hover{
+  background-color: rgb(80, 22, 228);
+}
