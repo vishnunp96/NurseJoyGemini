@@ -158,9 +158,9 @@
 
 .chat-message-text{
   padding-left: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* display: flex; */
+  /* justify-content: center;
+  align-items: center; */
   text-align: left;
 }
 
@@ -182,4 +182,44 @@
 }
 .report-button:hover{
   background-color: rgb(80, 22, 228);
+}
+
+.record-button-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.record-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background-color: #007bff;
+  border: none;
+  cursor: pointer;
+}
+
+.record-button img {
+  width: 30px;
+  height: 30px;
+}
+
+.record-button.recording {
+  background-color: #ff0000;
+}
+
+.timer {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
 }
