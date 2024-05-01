@@ -12,6 +12,7 @@ function App() {
     const timerIntervalRef = useRef(null);
     const chatMsgRef = useRef(null);
     const [input, setInput] = useState("");
+    const mediaRecorderRef = useRef(null);
     const [chatLog, setChatLog] = useState([
     ]);
     const [patientList, setPatientList] = useState([
@@ -150,6 +151,7 @@ function App() {
         navigator.mediaDevices.getUserMedia({ audio: true })
           .then((stream) => {
             const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorderRef.current = mediaRecorder;
             mediaRecorder.start();
       
             const audioChunks = [];
@@ -159,7 +161,8 @@ function App() {
       
             mediaRecorder.addEventListener('stop', () => {
               const audioBlob = new Blob(audioChunks);
-              console.log(audioBlob);
+              console.log('set audio');
+              setRecordedBlob(audioBlob);
             });
       
             setIsRecording(true);
@@ -183,13 +186,38 @@ function App() {
             console.error('Error accessing media devices:', error);
           });
       };
+
+      function createAudioUrl(blob) {
+        return window.URL.createObjectURL(blob);
+      }
       
       const stopRecording = () => {
+        console.log('stopped');
         setIsRecording(false);
         setTimer(0);
-        setRecordedBlob(null);
-        clearInterval(timerIntervalRef.current);
+      
+        if (mediaRecorderRef.current) {
+          mediaRecorderRef.current.stop();
+          console.log('media recorder stopped');
+        }
+      
+        if (recordedBlob) {
+          console.log('there\'s a blob');
+        //   const audioUrl = createAudioUrl(recordedBlob);
+        //   const audioElement = new Audio(audioUrl);
+        //   audioElement.play();
+        }
       };
+
+      useEffect(() => {
+        return () => {
+          if (recordedBlob) {
+            const audioUrl = createAudioUrl(recordedBlob)
+            console.log(audioUrl)
+            window.URL.revokeObjectURL(audioUrl);
+          }
+        };
+      }, [recordedBlob]);
 
     return (
         <div className="App">
@@ -226,12 +254,18 @@ function App() {
                                 className={`record-button ${isRecording ? 'recording' : ''}`}
                                 onClick={isRecording ? stopRecording : startRecording}
                             >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">
-                                <path d="M38.3333 26.6667C38.3333 20.2233 43.5567 15 50 15C56.4433 15 61.6667 20.2233 61.6667 26.6667V42.2222C61.6667 48.6655 56.4433 53.8889 50 53.8889C43.5567 53.8889 38.3333 48.6655 38.3333 42.2222V26.6667Z" fill="white"/>
-                                <path d="M53.8889 69.1688C67.0811 67.2818 77.2222 55.9363 77.2222 42.2222C77.2222 40.0744 75.4811 38.3333 73.3333 38.3333C71.1856 38.3333 69.4445 40.0744 69.4445 42.2222C69.4445 52.9611 60.7389 61.6667 50 61.6667C39.2611 61.6667 30.5556 52.9611 30.5556 42.2222C30.5556 40.0744 28.8144 38.3333 26.6667 38.3333C24.5189 38.3333 22.7778 40.0744 22.7778 42.2222C22.7778 55.9363 32.9189 67.2818 46.1111 69.1688V77.2222H34.4444C32.2967 77.2222 30.5556 78.9633 30.5556 81.1111C30.5556 83.2589 32.2967 85 34.4444 85H65.5556C67.7033 85 69.4445 83.2589 69.4445 81.1111C69.4445 78.9633 67.7033 77.2222 65.5556 77.2222H53.8889V69.1688Z" fill="white"/>
-                            </svg>
+                            {isRecording ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M50 85C69.33 85 85 69.33 85 50C85 30.67 69.33 15 50 15C30.67 15 15 30.67 15 50C15 69.33 30.67 85 50 85ZM41.25 36.875C38.8338 36.875 36.875 38.8338 36.875 41.25V58.75C36.875 61.1662 38.8338 63.125 41.25 63.125H58.75C61.1662 63.125 63.125 61.1662 63.125 58.75V41.25C63.125 38.8338 61.1662 36.875 58.75 36.875H41.25Z" fill="white"/>
+                                </svg>
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">
+                                    <path d="M38.3333 26.6667C38.3333 20.2233 43.5567 15 50 15C56.4433 15 61.6667 20.2233 61.6667 26.6667V42.2222C61.6667 48.6655 56.4433 53.8889 50 53.8889C43.5567 53.8889 38.3333 48.6655 38.3333 42.2222V26.6667Z" fill="white"/>
+                                    <path d="M53.8889 69.1688C67.0811 67.2818 77.2222 55.9363 77.2222 42.2222C77.2222 40.0744 75.4811 38.3333 73.3333 38.3333C71.1856 38.3333 69.4445 40.0744 69.4445 42.2222C69.4445 52.9611 60.7389 61.6667 50 61.6667C39.2611 61.6667 30.5556 52.9611 30.5556 42.2222C30.5556 40.0744 28.8144 38.3333 26.6667 38.3333C24.5189 38.3333 22.7778 40.0744 22.7778 42.2222C22.7778 55.9363 32.9189 67.2818 46.1111 69.1688V77.2222H34.4444C32.2967 77.2222 30.5556 78.9633 30.5556 81.1111C30.5556 83.2589 32.2967 85 34.4444 85H65.5556C67.7033 85 69.4445 83.2589 69.4445 81.1111C69.4445 78.9633 67.7033 77.2222 65.5556 77.2222H53.8889V69.1688Z" fill="white"/>
+                                </svg>
+                            )}
                             </button>
-                            {isRecording && <div className="timer">{timer}s</div>}
+                            {isRecording && <div> Recording...<div className="timer">{timer}s</div></div>}
                         </div>
                     )}
                     <form onSubmit={handleSubmit}>
