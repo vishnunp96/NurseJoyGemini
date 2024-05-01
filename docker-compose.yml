@@ -13,6 +13,8 @@ services:
 
   client:
     build: ./client
+    volumes:
+      - ./client:/app
     image: docjoy-client
     command:
       - npm start

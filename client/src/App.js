@@ -3,6 +3,8 @@ import './App.css';
 import {useState} from "react";
 import {useRef, useEffect} from "react";
 import DownloadButton from "./DownloadButton";
+import DOMPurify from 'dompurify';
+import { marked } from 'marked';
 
 function App() {
     const chatMsgRef = useRef(null);
@@ -186,6 +188,14 @@ function App() {
 }
 
 const ChatMessage = ({message}) => {
+
+    marked.setOptions({
+        breaks: true,
+    });
+
+    const markdownToHtml = marked(message.message);
+    const sanitizedMessage = DOMPurify.sanitize(markdownToHtml);
+
     return (
         <div className={`chat-message-element 
         ${message.user === "model" ? "model" : "user"}`}>
@@ -194,8 +204,8 @@ const ChatMessage = ({message}) => {
                 ${message.user === "model" ? "model" : "user"}`}>
                     {message.user === "model" ? "NJ" : "P"}
                 </div>
-                <div className="chat-message-text">
-                    {message.message}
+                <div className="chat-message-text" dangerouslySetInnerHTML={{__html: sanitizedMessage}}>
+                    {/* {message.message} */}
                 </div>
             </div>
         </div>
