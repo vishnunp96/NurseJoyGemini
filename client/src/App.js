@@ -1,12 +1,15 @@
 import './normalize.css'
 import './App.css';
-import {useState} from "react";
-import {useRef, useEffect} from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import DownloadButton from "./DownloadButton";
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
 function App() {
+    const [isRecording, setIsRecording] = useState(false);
+    const [timer, setTimer] = useState(0);
+    const [recordedBlob, setRecordedBlob] = useState(null);
+    const timerIntervalRef = useRef(null);
     const chatMsgRef = useRef(null);
     const [input, setInput] = useState("");
     const [chatLog, setChatLog] = useState([
@@ -143,6 +146,51 @@ function App() {
         await scrollChat();
     }
 
+    const startRecording = () => {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then((stream) => {
+            const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+      
+            const audioChunks = [];
+            mediaRecorder.addEventListener('dataavailable', (event) => {
+              audioChunks.push(event.data);
+            });
+      
+            mediaRecorder.addEventListener('stop', () => {
+              const audioBlob = new Blob(audioChunks);
+              console.log(audioBlob);
+            });
+      
+            setIsRecording(true);
+            setTimer(0);
+      
+            if (timerIntervalRef.current) {
+              clearInterval(timerIntervalRef.current);
+            }
+      
+            timerIntervalRef.current = setInterval(() => {
+              setTimer((prevTimer) => prevTimer + 1);
+            }, 1000);
+      
+            return () => {
+              mediaRecorder.stop();
+              stream.getTracks().forEach((track) => track.stop());
+              clearInterval(timerIntervalRef.current);
+            };
+          })
+          .catch((error) => {
+            console.error('Error accessing media devices:', error);
+          });
+      };
+      
+      const stopRecording = () => {
+        setIsRecording(false);
+        setTimer(0);
+        setRecordedBlob(null);
+        clearInterval(timerIntervalRef.current);
+      };
+
     return (
         <div className="App">
             <div className="side-menu">
@@ -172,6 +220,20 @@ function App() {
                     }
                 </div>
                 <div className="chat-input-holder">
+                    {chatLog.length === 0 && (
+                            <div className="record-button-container">
+                            <button
+                                className={`record-button ${isRecording ? 'recording' : ''}`}
+                                onClick={isRecording ? stopRecording : startRecording}
+                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">
+                                <path d="M38.3333 26.6667C38.3333 20.2233 43.5567 15 50 15C56.4433 15 61.6667 20.2233 61.6667 26.6667V42.2222C61.6667 48.6655 56.4433 53.8889 50 53.8889C43.5567 53.8889 38.3333 48.6655 38.3333 42.2222V26.6667Z" fill="white"/>
+                                <path d="M53.8889 69.1688C67.0811 67.2818 77.2222 55.9363 77.2222 42.2222C77.2222 40.0744 75.4811 38.3333 73.3333 38.3333C71.1856 38.3333 69.4445 40.0744 69.4445 42.2222C69.4445 52.9611 60.7389 61.6667 50 61.6667C39.2611 61.6667 30.5556 52.9611 30.5556 42.2222C30.5556 40.0744 28.8144 38.3333 26.6667 38.3333C24.5189 38.3333 22.7778 40.0744 22.7778 42.2222C22.7778 55.9363 32.9189 67.2818 46.1111 69.1688V77.2222H34.4444C32.2967 77.2222 30.5556 78.9633 30.5556 81.1111C30.5556 83.2589 32.2967 85 34.4444 85H65.5556C67.7033 85 69.4445 83.2589 69.4445 81.1111C69.4445 78.9633 67.7033 77.2222 65.5556 77.2222H53.8889V69.1688Z" fill="white"/>
+                            </svg>
+                            </button>
+                            {isRecording && <div className="timer">{timer}s</div>}
+                        </div>
+                    )}
                     <form onSubmit={handleSubmit}>
                         <input className="chat-input-textarea"
                                placeholder={`${activePatient === null ? "Add a new patient!" :
