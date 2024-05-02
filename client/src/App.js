@@ -290,14 +290,24 @@ function App() {
                 </div>
             </section>
             {isShowModal && (
-            <div className="modal-overlay">
-                <div className="modal">
-                <div className="modal-content">
-                    <span className="close-button" onClick={hideModal}>
-                    &times;
+               <div className="modal-overlay">
+               <div className="modal">
+                 <div className="modal-header">
+                   <div className="modal-icon">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                       <path d="M3.83057 12.525C3.83057 11.6551 4.53572 10.95 5.40557 10.95C6.27542 10.95 6.98057 11.6551 6.98057 12.525V18.825C6.98057 19.6948 6.27542 20.4 5.40557 20.4C4.53572 20.4 3.83057 19.6948 3.83057 18.825V12.525Z" fill="#015EB8"/>
+                       <path d="M8.03057 12.35V18.0521C8.03057 18.8475 8.47997 19.5747 9.19142 19.9304L9.24376 19.9566C9.82695 20.2482 10.47 20.4 11.1221 20.4H16.809C17.81 20.4 18.6719 19.6934 18.8682 18.7118L20.1282 12.4118C20.3881 11.1124 19.3942 9.89998 18.069 9.89998H14.3306V5.69998C14.3306 4.54018 13.3904 3.59998 12.2306 3.59998C11.6507 3.59998 11.1806 4.07008 11.1806 4.64998V5.34998C11.1806 6.25873 10.8858 7.14297 10.3406 7.86998L8.87057 9.82998C8.32531 10.557 8.03057 11.4412 8.03057 12.35Z" fill="#015EB8"/>
+                     </svg>
+                     
+                   </div>
+                   <span className="close-button" onClick={hideModal}>
+                        &times;
                     </span>
-                    <p>Download successful!</p>
-                </div>
+                    </div>
+                    <h2 className="modal-title">Report Exported Successfully</h2>
+                    <p className="modal-description">
+                    Your report has been downloaded. Please check your device's "Downloads" folder. You can now email or mail this report directly to the patient.
+                    </p>
                 </div>
             </div>
             )}
