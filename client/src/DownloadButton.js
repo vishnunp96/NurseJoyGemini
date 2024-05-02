@@ -51,8 +51,16 @@ class FileDownloadButton extends React.Component {
     };
 
     render() {
+        const { onClick } = this.props;
         return (
-                <button className="report-button" onClick={this.handleDownload}>Download Report</button>
+                <button 
+                className="report-button" 
+                onClick={() => {
+                    onClick();
+                    this.handleDownload();
+                  }}
+                >
+                    Download Report</button>
         );
     }
 }

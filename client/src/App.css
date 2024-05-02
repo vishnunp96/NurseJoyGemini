@@ -179,6 +179,7 @@
   background-color: var(--side-bg-colour);
   font-weight: bold;
   transition-duration: 0.5s;
+  cursor: pointer;
 }
 .report-button:hover{
   background-color: rgb(80, 22, 228);
@@ -222,4 +223,45 @@
   font-size: 18px;
   font-weight: bold;
   text-align: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+}
+
+.modal {
+  background-color: var(--bg-colour);
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid var(--border-colour);
+  width: 30%;
+  border-radius: 10px;
+}
+
+.modal-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  color: var(--text-colour);
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: var(--side-bg-colour);
+  text-decoration: none;
+  cursor: pointer;
 }

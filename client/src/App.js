@@ -12,6 +12,7 @@ function App() {
     const timerIntervalRef = useRef(null);
     const chatMsgRef = useRef(null);
     const [input, setInput] = useState("");
+    const [isShowModal, setShowModal] = useState(false);
     const mediaRecorderRef = useRef(null);
     const [chatLog, setChatLog] = useState([
     ]);
@@ -219,6 +220,15 @@ function App() {
         };
       }, [recordedBlob]);
 
+      const showModal = () => {
+        console.log('open modal');
+        setShowModal(true);
+      };
+      
+      const hideModal = () => {
+        setShowModal(false);
+      };
+
     return (
         <div className="App">
             <div className="side-menu">
@@ -239,7 +249,7 @@ function App() {
             </div>
             <section className="chat-area">
                 {/*<button className="report-button" >Download Report</button>*/}
-                <DownloadButton/>
+                <DownloadButton onClick={showModal} />
                 <div ref={chatMsgRef} className="chat-log">
                     {
                         chatLog.map((message, index) => (
@@ -279,6 +289,18 @@ function App() {
                     </form>
                 </div>
             </section>
+            {isShowModal && (
+            <div className="modal-overlay">
+                <div className="modal">
+                <div className="modal-content">
+                    <span className="close-button" onClick={hideModal}>
+                    &times;
+                    </span>
+                    <p>Download successful!</p>
+                </div>
+                </div>
+            </div>
+            )}
         </div>
     );
 }
