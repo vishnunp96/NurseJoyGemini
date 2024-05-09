@@ -11,6 +11,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 
 
 async function startChat(chat_history = null) {
+    console.log("API Key found:"+API_KEY.slice(0,5));
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({model: MODEL_NAME});
 
