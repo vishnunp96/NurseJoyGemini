@@ -11,7 +11,10 @@ const API_KEY = process.env.GEMINI_API_KEY;
 
 
 async function startChat(chat_history = null) {
-    console.log("API Key found:"+API_KEY.slice(0,5));
+    if (API_KEY.length > 0)
+        console.log("API Key found:"+API_KEY.slice(0,5));
+    else
+        console.log("Expect API failure.");
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({model: MODEL_NAME});
 
