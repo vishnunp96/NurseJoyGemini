@@ -9,9 +9,8 @@ const fs = require('fs');
 const MODEL_NAME = "gemini-1.0-pro";
 const API_KEY = process.env.GEMINI_API_KEY;
 
-
 async function startChat(chat_history = null) {
-    if (API_KEY.length > 0)
+    if ( API_KEY )
         console.log("API Key found:"+API_KEY.slice(0,5));
     else
         console.log("Expect API failure.");
